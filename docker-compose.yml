@@ -1,0 +1,101 @@
+# ============================================
+# Autonomous AI Web Data Extraction Agent
+# Docker Compose Configuration
+# ============================================
+
+version: '3.8'
+
+services:
+  # Main Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: autonomous-ai-agent
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongo:27017/autonomous_ai_agent
+      - REDIS_URL=redis://redis:6379
+      - CHROMA_URL=http://chroma:8000
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+      - redis
+      - chroma
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+    networks:
+      - agent-network
+    restart: unless-stopped
+
+  # MongoDB
+  mongo:
+    image: mongo:7
+    container_name: autonomous-ai-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - agent-network
+    restart: unless-stopped
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: autonomous-ai-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - agent-network
+    restart: unless-stopped
+
+  # Chroma Vector DB
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: autonomous-ai-chroma
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma-data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma
+      - ANONYMIZED_TELEMETRY=FALSE
+    networks:
+      - agent-network
+    restart: unless-stopped
+
+  # Optional: Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: autonomous-ai-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - app
+    networks:
+      - agent-network
+    restart: unless-stopped
+    profiles:
+      - with-nginx
+
+volumes:
+  mongo-data:
+  redis-data:
+  chroma-data:
+
+networks:
+  agent-network:
+    driver: bridge

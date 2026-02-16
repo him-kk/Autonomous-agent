@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autonomous-ai-agent
+  namespace: autonomous-ai
+  labels:
+    app: autonomous-ai-agent
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: autonomous-ai-agent
+  template:
+    metadata:
+      labels:
+        app: autonomous-ai-agent
+    spec:
+      containers:
+        - name: app
+          image: autonomous-ai-agent:latest
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3000"
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: mongodb-uri
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: redis-url
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: openai-api-key
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "2000m"
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health/live
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health/ready
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts:
+            - name: logs
+              mountPath: /app/logs
+            - name: uploads
+              mountPath: /app/uploads
+      volumes:
+        - name: logs
+          emptyDir: {}
+        - name: uploads
+          emptyDir: {}
