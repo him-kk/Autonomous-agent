@@ -49,7 +49,7 @@ User Input → Planner Node → Search Node → Relevance Filter → Scraper Nod
 - **Runtime**: Node.js 20+
 - **Language**: TypeScript
 - **Agent Framework**: LangGraph, LangChain.js
-- **AI/LLM**: OpenAI GPT-4o
+- **AI/LLM**: OpenAI GPT-4o (selectable via `LLM_PROVIDER`)
 - **Scraping**: Playwright, Puppeteer, Cheerio
 - **Database**: MongoDB, Redis
 - **Vector DB**: Chroma, Pinecone
@@ -177,7 +177,9 @@ curl http://localhost:3000/api/v1/export/{jobId}/csv \
 |----------|-------------|---------|
 | `NODE_ENV` | Environment mode | `development` |
 | `PORT` | Server port | `3000` |
-| `OPENAI_API_KEY` | OpenAI API key | Required |
+| `LLM_PROVIDER` | LLM provider to use | `openai` |
+| `OPENAI_API_KEY` | OpenAI API key | Required when `LLM_PROVIDER=openai` |
+| `OPENAI_MODEL` | OpenAI model | `gpt-4o` |
 | `MONGODB_URI` | MongoDB connection | `mongodb://localhost:27017/autonomous_ai_agent` |
 | `REDIS_URL` | Redis connection | `redis://localhost:6379` |
 | `SERPAPI_KEY` | SerpAPI key | Optional |
@@ -321,8 +323,4 @@ MIT License - see LICENSE file for details.
 4. Push to the branch
 5. Create a Pull Request
 
-## Support
 
-For issues and questions:
-- GitHub Issues: [github.com/yourusername/autonomous-ai-agent/issues](https://github.com/yourusername/autonomous-ai-agent/issues)
-- Email: support@autonomous-ai-agent.com

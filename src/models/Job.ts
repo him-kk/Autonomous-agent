@@ -31,7 +31,7 @@ export interface IScrapingJob extends Document {
   markFailed(error: string): Promise<void>;
 }
 
-// ✅ Add interface for static methods
+//  Add interface for static methods
 interface IScrapingJobModel extends Model<IScrapingJob> {
   findActiveJobs(): Promise<IScrapingJob[]>;
   findByUserId(userId: string, limit?: number): Promise<IScrapingJob[]>;
@@ -204,5 +204,5 @@ ScrapingJobSchema.statics.findByUserId = function(userId: string, limit: number 
     .limit(limit);
 };
 
-// ✅ Export with both instance and static types
+//  Export with both instance and static types
 export const ScrapingJob = mongoose.model<IScrapingJob, IScrapingJobModel>('ScrapingJob', ScrapingJobSchema);

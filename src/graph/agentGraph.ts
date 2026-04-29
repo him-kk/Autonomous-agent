@@ -14,7 +14,7 @@ import { relevanceFilterNode } from '@/nodes/relevanceFilter.js';
 import { scraperNode } from '@/nodes/scraper.js';
 import { cleanerNode } from '@/nodes/cleaner.js';
 import { validatorNode } from '@/nodes/validator.js';
-import { serviceSaverNode } from '@/nodes/serviceSaver.js';  // ✅ ADDED
+import { serviceSaverNode } from '@/nodes/serviceSaver.js';  
 import { memoryNode } from '@/nodes/memory.js';
 import { analyticsNode } from '@/nodes/analytics.js';
 import { logger } from '@/utils/logger.js';
@@ -102,7 +102,7 @@ const validatorWrapper = async (state: GraphState): Promise<Partial<GraphState>>
   return validatorNode.invoke(agentState);
 };
 
-// ✅ ADDED: Service Saver Wrapper
+// ADDED: Service Saver Wrapper
 const serviceSaverWrapper = async (state: GraphState): Promise<Partial<GraphState>> => {
   const agentState = state as AgentState;
   return serviceSaverNode.invoke(agentState);
@@ -133,7 +133,7 @@ const shouldRetryScraping = (state: GraphState): string => {
     return 'scrape_node';
   }
   
-  return 'service_saver_node';  // ✅ CHANGED: Go to service saver instead of analytics
+  return 'service_saver_node';  //  CHANGED: Go to service saver instead of analytics
 };
 
 const checkForErrors = (state: GraphState): string => {

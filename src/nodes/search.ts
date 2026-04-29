@@ -85,7 +85,7 @@ export class SearchNode {
             resultsFound: results.length 
           });
         } catch (error) {
-          // ✅ FIXED: Properly format error object
+          //  FIXED: Properly format error object
           const errorMessage = error instanceof Error ? error.message : 'Unknown error';
           const errorDetails = this.formatAxiosError(error);
           
@@ -124,7 +124,7 @@ export class SearchNode {
     }
   }
 
-  // ✅ NEW: Helper to format axios errors
+  //  NEW: Helper to format axios errors
   private formatAxiosError(error: any): any {
     if (axios.isAxiosError(error)) {
       return {
@@ -188,7 +188,7 @@ export class SearchNode {
         timeout: 10000
       });
 
-      // ✅ Check for API errors in response
+      //  Check for API errors in response
       if (response.data.error) {
         throw new Error(`SerpAPI Error: ${response.data.error}`);
       }
@@ -212,7 +212,7 @@ export class SearchNode {
         }
       }));
     } catch (error) {
-      // ✅ FIXED: Properly handle and re-throw errors
+      //  FIXED: Properly handle and re-throw errors
       if (axios.isAxiosError(error)) {
         const statusCode = error.response?.status;
         const errorMessage = error.response?.data?.error || error.message;
